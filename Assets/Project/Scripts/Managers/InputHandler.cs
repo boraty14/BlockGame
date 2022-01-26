@@ -1,8 +1,7 @@
-using System;
-using Project.Scripts.Managers;
+using Project.Scripts.Utils;
 using UnityEngine;
 
-namespace Project.Scripts.Core
+namespace Project.Scripts.Managers
 {
     public class InputHandler : MonoBehaviour
     {
@@ -14,7 +13,17 @@ namespace Project.Scripts.Core
             _mainCamera = Camera.main;
         }
 
-        private void FixedUpdate()
+        private void OnEnable()
+        {
+            InputPanel.Instance.OnPointerDownEvent.AddListener(OnPointerDown);
+        }
+
+        private void OnDisable()
+        {
+            InputPanel.Instance.OnPointerDownEvent.RemoveListener(OnPointerDown);
+        }
+
+        private void OnPointerDown()
         {
             if (GameManager.Instance.IsBlasting) return;
             Ray cameraRay = _mainCamera.ScreenPointToRay(Input.mousePosition);
