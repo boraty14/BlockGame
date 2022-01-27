@@ -461,8 +461,8 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -503,7 +503,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -518,6 +518,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1023844945}
+  - component: {fileID: 1023844946}
   m_Layer: 0
   m_Name: BlockGenerator
   m_TagString: Untagged
@@ -539,6 +540,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1023844946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023844944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ad65a1ee2efa8448cd10f84a4658d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockPrefabs:
+  - {fileID: 9021321348386583703, guid: 8071ff54442b2fb46853c2bed44b2c95, type: 3}
+  - {fileID: 7382128327120301833, guid: fb3abd4c60c07d643940ec986d4eef4f, type: 3}
+  - {fileID: 3262111002788320142, guid: 414840ee216c29d43961ae89ab7623ae, type: 3}
+  - {fileID: 3434015122421390653, guid: ce762b39b66d1b846bc067d549bead95, type: 3}
+  - {fileID: 2135735304243480168, guid: 157522645cfb85d42a936d810f1a0d55, type: 3}
+  - {fileID: 9072258570847346024, guid: 6d9206516a58128479ede6cc5e262c6d, type: 3}
 --- !u!1 &1133076962
 GameObject:
   m_ObjectHideFlags: 0
@@ -862,3 +882,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc303b7629870e744ab89803d025ae7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rowCount: 10
+  columnCount: 10
+  colorCount: 1
+  firstLimit: 0
+  secondLimit: 0
+  thirdLimit: 0

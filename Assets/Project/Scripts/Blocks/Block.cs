@@ -8,5 +8,18 @@ namespace Project.Scripts.Blocks
         [SerializeField] private Sprite spriteA;
         [SerializeField] private Sprite spriteB;
         [SerializeField] private Sprite spriteC;
+        [SerializeField] private BlockColor blockColor;
+
+        public BlockColor GetBlockColor() => blockColor;
+    }
+
+    public enum BlockColor
+    {
+        Green,
+        Red,
+        Pink,
+        Purple,
+        Yellow,
+        Blue
     }
 }
