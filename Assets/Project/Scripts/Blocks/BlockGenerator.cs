@@ -9,8 +9,8 @@ namespace Project.Scripts.Blocks
     {
         [SerializeField] private List<GameObject> blockPrefabs;
         
-        private const float HorizontalScaleFactor = 2.2f; // horizontal ratio of unity units/unity scale for sprites
-        private const float VerticalScaleFactor = 2.5f; // vertical ratio of unity units/unity scale for sprites
+        private const float HorizontalScaleFactor = 2.26f; // horizontal ratio of unity units/unity scale for sprites
+        private const float VerticalScaleFactor = 2.56f; // vertical ratio of unity units/unity scale for sprites
         private const int MaxColorCount = 6;
         
         private int _rowCount;

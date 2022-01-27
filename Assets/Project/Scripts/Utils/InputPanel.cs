@@ -6,68 +6,157 @@ using UnityEngine.UI;
 
 namespace Project.Scripts.Utils
 {
-  [RequireComponent(typeof (Image))]
-  public class InputPanel : MonoBehaviourSingleton<InputPanel>,
-    IDragHandler,
-    IEventSystemHandler,
-    IPointerDownHandler,
-    IPointerUpHandler,
-    IPointerExitHandler
-  {
-    [Space(16f)]
-    [Title("Full Info Events")]
-    public UnityEvent<PointerEventData> OnDragFullInfo = new UnityEvent<PointerEventData>();
-    public UnityEvent<PointerEventData> OnPointerDownFullInfo = new UnityEvent<PointerEventData>();
-    public UnityEvent<PointerEventData> OnPointerUpFullInfo = new UnityEvent<PointerEventData>();
-    public UnityEvent<PointerEventData> OnPointerExitFullInfo = new UnityEvent<PointerEventData>();
-    [Space(16f)]
-    [Title("Delta Event")]
-    public UnityEvent<Vector2> OnDragDelta = new UnityEvent<Vector2>();
-    [Space(16f)]
-    [Title("Position Events")]
-    public UnityEvent<Vector2> OnDragPosition = new UnityEvent<Vector2>();
-    public UnityEvent<Vector2> OnPointDownPosition = new UnityEvent<Vector2>();
-    public UnityEvent<Vector2> OnPointerUpPosition = new UnityEvent<Vector2>();
-    public UnityEvent<Vector2> OnPointerExitPosition = new UnityEvent<Vector2>();
-    [Space(16f)]
-    [Title("Pointer Events")]
-    public UnityEvent OnPointerDownEvent = new UnityEvent();
-    public UnityEvent OnPointerUpEvent = new UnityEvent();
-    public UnityEvent OnPointerExitEvent = new UnityEvent();
-    private Image inputImage;
-
-    private void Awake() => this.inputImage = this.GetComponent<Image>();
-
-    public void OnDrag(PointerEventData eventData)
+  [RequireComponent(typeof(Image))]
+    public class InputPanel : MonoBehaviourSingleton<InputPanel>, IDragHandler, IPointerDownHandler, IPointerUpHandler,
+        IPointerExitHandler
     {
-      this.OnDragDelta?.Invoke(eventData.delta * (1536f / (float) Screen.width));
-      this.OnDragPosition?.Invoke(eventData.position * (1536f / (float) Screen.width));
-      this.OnDragFullInfo?.Invoke(eventData);
+        /// <summary>
+        /// Called when OnDrag callback fires
+        /// Includes PointerEventData object
+        /// </summary>
+        [Space(16), Title("Full Info Events")]
+        public PointerEventDataEvent OnDragFullInfo = new PointerEventDataEvent();
+
+        /// <summary>
+        /// Called when OnPointerDown callback fires
+        /// Includes PointerEventData object
+        /// </summary>
+        public PointerEventDataEvent OnPointerDownFullInfo = new PointerEventDataEvent();
+
+        /// <summary>
+        /// Called when OnPointerUp callback fires
+        /// Includes PointerEventData object
+        /// </summary>
+        public PointerEventDataEvent OnPointerUpFullInfo = new PointerEventDataEvent();
+
+        /// <summary>
+        /// Called when OnPointerExit callback fires
+        /// Includes PointerEventData object
+        /// </summary>
+        public PointerEventDataEvent OnPointerExitFullInfo = new PointerEventDataEvent();
+
+        /// <summary>
+        /// Called when OnDrag callback fires
+        /// Includes Vector2 object as pointer delta 
+        /// </summary>
+        [Space(16), Title("Delta Event")]
+        public PositionEvent OnDragDelta = new PositionEvent();
+
+        /// <summary>
+        /// Called when OnDrag callback fires
+        /// Includes Vector2 object as pointer's current position 
+        /// </summary>
+        [Space(16), Title("Position Events")]
+        public PositionEvent OnDragPosition = new PositionEvent();
+
+        /// <summary>
+        /// Called when OnPointerDown callback fires
+        /// Includes Vector2 object as pointer's current position 
+        /// </summary>
+        public PositionEvent OnPointDownPosition = new PositionEvent();
+
+        /// <summary>
+        /// Called when OnPointerUp callback fires
+        /// Includes Vector2 object as pointer's current position 
+        /// </summary>
+        public PositionEvent OnPointerUpPosition = new PositionEvent();
+
+        /// <summary>
+        /// Called when OnPointerExit callback fires
+        /// include Vector2 object as pointer's current position 
+        /// </summary>
+        public PositionEvent OnPointerExitPosition = new PositionEvent();
+
+        /// <summary>
+        /// Called when OnPointerDown callback fires
+        /// </summary>
+        [Space(16), Title("Pointer Events")]
+        public EmptyEvent OnPointerDownEvent = new EmptyEvent();
+
+        /// <summary>
+        /// Called when OnPointerUp callback fires
+        /// </summary>
+        public EmptyEvent OnPointerUpEvent = new EmptyEvent();
+
+        /// <summary>
+        /// Called when OnPointerExit callback fires
+        /// </summary>
+        public EmptyEvent OnPointerExitEvent = new EmptyEvent();
+
+        private Image inputImage = null;
+
+        private void Awake()
+        {
+            inputImage = GetComponent<Image>();
+        }
+
+        /// <summary>
+        /// UnityEngine-Event callback method DO NOT call Manually
+        /// </summary>
+        /// <param name="eventData"></param>
+        public void OnDrag(PointerEventData eventData)
+        {
+            OnDragDelta?.Invoke(eventData.delta * (1536.0f / Screen.width));
+            OnDragPosition?.Invoke(eventData.position * (1536.0f / Screen.width));
+            OnDragFullInfo?.Invoke(eventData);
+        }
+
+        /// <summary>
+        /// UnityEngine-Event callback method DO NOT call Manually
+        /// </summary>
+        /// <param name="eventData"></param>
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            OnPointDownPosition?.Invoke(eventData.position * (1536.0f / Screen.width));
+            OnPointerDownEvent?.Invoke();
+            OnPointerDownFullInfo?.Invoke(eventData);
+        }
+
+        /// <summary>
+        /// UnityEngine-Event callback method DO NOT call Manually
+        /// </summary>
+        /// <param name="eventData"></param>
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            OnPointerUpPosition?.Invoke(eventData.position * (1536.0f / Screen.width));
+            OnPointerUpEvent.Invoke();
+            OnPointerUpFullInfo?.Invoke(eventData);
+        }
+
+        /// <summary>
+        /// UnityEngine-Event callback method DO NOT call Manually
+        /// </summary>
+        /// <param name="eventData"></param>
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            OnPointerExitPosition?.Invoke(eventData.position * (1536.0f / Screen.width));
+            OnPointerExitEvent?.Invoke();
+            OnPointerExitFullInfo?.Invoke(eventData);
+        }
+
+        public void Enable()
+        {
+            inputImage.enabled = true;
+        }
+
+        public void Disable()
+        {
+            inputImage.enabled = false;
+        }
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    [System.Serializable]
+    public class PositionEvent : UnityEvent<Vector2>
     {
-      this.OnPointDownPosition?.Invoke(eventData.position * (1536f / (float) Screen.width));
-      this.OnPointerDownEvent?.Invoke();
-      this.OnPointerDownFullInfo?.Invoke(eventData);
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    [System.Serializable]
+    public class PointerEventDataEvent : UnityEvent<PointerEventData>
     {
-      this.OnPointerUpPosition?.Invoke(eventData.position * (1536f / (float) Screen.width));
-      this.OnPointerUpEvent.Invoke();
-      this.OnPointerUpFullInfo?.Invoke(eventData);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    [System.Serializable]
+    public class EmptyEvent : UnityEvent
     {
-      this.OnPointerExitPosition?.Invoke(eventData.position * (1536f / (float) Screen.width));
-      this.OnPointerExitEvent?.Invoke();
-      this.OnPointerExitFullInfo?.Invoke(eventData);
     }
-
-    public void Enable() => this.inputImage.enabled = true;
-
-    public void Disable() => this.inputImage.enabled = false;
-  }
 }

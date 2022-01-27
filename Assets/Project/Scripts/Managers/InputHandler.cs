@@ -26,11 +26,14 @@ namespace Project.Scripts.Managers
         private void OnPointerDown()
         {
             if (GameManager.Instance.IsBlasting) return;
-            Ray cameraRay = _mainCamera.ScreenPointToRay(Input.mousePosition);
             
-            if (Physics.Raycast(cameraRay, out RaycastHit hit, Mathf.Infinity,blockLayer.value))
+            var mousePosition = Input.mousePosition;
+            mousePosition.z = Mathf.Abs(_mainCamera.transform.position.z);
+            var screenPos = _mainCamera.ScreenToWorldPoint(mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(screenPos,Vector2.zero);
+            if (hit)
             {
-                
+                Debug.Log(hit.transform.name);
             }
         }
     }
