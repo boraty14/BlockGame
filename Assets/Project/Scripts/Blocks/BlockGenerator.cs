@@ -43,7 +43,10 @@ namespace Project.Scripts.Blocks
             {
                 for (int j = 0; j < _columnCount; j++)
                 {
-                    //GameObject newBlock = Instantiate()
+                    GameObject newBlock = Instantiate(_gameBlockPrefabs[Random.Range(0, _gameBlockPrefabs.Count)], transform);
+                    var verticalPosition = ((i / 2 + i % 2) * Mathf.Pow(-1, i + 1) - 0.5f) * VerticalScaleFactor * Vector3.up;
+                    var horizontalPosition = ((j / 2 + j % 2) * Mathf.Pow(-1, j + 1) - 0.5f) * HorizontalScaleFactor * Vector3.right;
+                    newBlock.transform.position = verticalPosition + horizontalPosition;
                 }
             }
         }
