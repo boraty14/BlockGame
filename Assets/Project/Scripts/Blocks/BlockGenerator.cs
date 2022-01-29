@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Project.Scripts.Managers;
 using Project.Scripts.Utils;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Project.Scripts.Blocks
 {
@@ -24,9 +26,13 @@ namespace Project.Scripts.Blocks
         {
             SetGameSettings();
             InitializeGame();
+        }
+
+        private void Start()
+        {
             AssignBlocks();
         }
-        
+
         private void SetGameSettings()
         {
             _rowCount = GameManager.Instance.rowCount;
@@ -57,7 +63,7 @@ namespace Project.Scripts.Blocks
                     // give block an index according to (0,0) point is bottom left
                     int rowIndex = ReturnReferenceIndex(i, _rowCount);
                     int columnIndex = ReturnReferenceIndex(j, _columnCount);
-                    Debug.Log(rowIndex + " " + columnIndex);
+                    //Debug.Log(rowIndex + " " + columnIndex);
                     _gameBlocks[rowIndex, columnIndex] = newBlock.GetComponent<Block>();
                 }
             }

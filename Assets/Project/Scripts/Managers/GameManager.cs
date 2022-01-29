@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Project.Scripts.Managers
 {
+    [DefaultExecutionOrder(-1)]
     public class GameManager : MonoBehaviourSingleton<GameManager>
     {
         [LabelText("Total number of rows (M)")][Range(2,10)] public int rowCount;

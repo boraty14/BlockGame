@@ -899,6 +899,6 @@ MonoBehaviour:
   rowCount: 10
   columnCount: 10
   colorCount: 6
-  firstLimit: 0
-  secondLimit: 0
-  thirdLimit: 0
+  firstLimit: 2
+  secondLimit: 4
+  thirdLimit: 6
