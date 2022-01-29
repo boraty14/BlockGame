@@ -46,6 +46,7 @@ namespace Project.Scripts.Blocks
 
         public async void OnHit()
         {
+            if (_currentBlockGroup.Count == 1) return;
             GameManager.Instance.IsBlockInProcess = true;
             var destroyProcesses = new Task[_currentBlockGroup.Count];
             for (int i = 0; i < _currentBlockGroup.Count; i++)

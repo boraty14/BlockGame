@@ -120,8 +120,9 @@ namespace Project.Scripts.Blocks
                 {
                     GameObject newBlockObject = GetRandomBlockObject();
                     var verticalGeneratePosition = ((_rowCount / 2) + (2 + i) - 0.5f) * VerticalScaleFactor * Vector3.up;
-                    var horizontalGeneratePosition = InitHorizontalPosition(sameColumnBlocks[i].columnIndex);
-                    newBlockObject.transform.position = verticalGeneratePosition + horizontalGeneratePosition - Vector3.forward;
+                    var horizontalGeneratePosition = (-(_columnCount / 2) + sameColumnBlocks[i].columnIndex + 0.5f) *
+                                                     HorizontalScaleFactor * Vector3.right;
+                    newBlockObject.transform.position = verticalGeneratePosition + horizontalGeneratePosition;
                 }    
             }
             
