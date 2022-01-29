@@ -34,14 +34,12 @@ namespace Project.Scripts.Blocks
         private void OnEnable()
         {
             EventBus.OnBlockDestroy += OnBlockDestroy;
-            EventBus.OnRecalculateBlock += OnRecalculateBlock;
             EventBus.OnAfterBlockDestroy += OnAfterBlockDestroy;
         }
 
         private void OnDisable()
         {
             EventBus.OnBlockDestroy -= OnBlockDestroy;
-            EventBus.OnRecalculateBlock -= OnRecalculateBlock;
             EventBus.OnAfterBlockDestroy -= OnAfterBlockDestroy;
         }
 
@@ -50,14 +48,6 @@ namespace Project.Scripts.Blocks
             _destroyedBlockIndices.Add((rowIndex,columnIndex));
         }
         
-        private void OnRecalculateBlock(int rowIndex, int columnIndex, int dropCount)
-        {
-            _gameBlocks[rowIndex - dropCount, columnIndex] =
-                _gameBlocks[rowIndex, columnIndex];
-            _gameBlocks[rowIndex - dropCount, columnIndex].
-                SetBlockIndex(rowIndex - dropCount, columnIndex);
-        }
-
         private void OnAfterBlockDestroy()
         {
             GenerateNewBlocks();
@@ -130,20 +120,50 @@ namespace Project.Scripts.Blocks
                 List<int> destroyedBlockRowIndices = new List<int>();
                 for (int i = 0; i < sameColumnBlocks.Count; i++)
                 {
-                    GameObject newBlockObject = GetRandomBlockObject();
+                    GameObject newGeneratedBlockObject = GetRandomBlockObject();
                     var verticalGeneratePosition = ((_rowCount / 2) + (2 + i) - 0.5f) * VerticalScaleFactor * Vector3.up;
                     var horizontalGeneratePosition = (-(_columnCount / 2) + sameColumnBlocks[i].columnIndex + 0.5f) *
                                                      HorizontalScaleFactor * Vector3.right;
-                    newBlockObject.transform.position = verticalGeneratePosition + horizontalGeneratePosition;
+                    newGeneratedBlockObject.transform.position = verticalGeneratePosition + horizontalGeneratePosition;
                     destroyedBlockRowIndices.Add(sameColumnBlocks[i].rowIndex);
-                    Block newBlock = newBlockObject.GetComponent<Block>();
-                    newBlock.IncreaseDropCount(sameColumnBlocks.Count);
-                    newBlock.SetBlockIndex(_rowCount-1-sameColumnBlocks.Count,sameColumnBlocks[0].columnIndex);
+                    Block newGeneratedBlock = newGeneratedBlockObject.GetComponent<Block>();
+                    newGeneratedBlock.IncreaseDropCount(sameColumnBlocks.Count);
+                    newGeneratedBlock.SetBlockIndex(_rowCount + i,sameColumnBlocks[0].columnIndex);
+                    newGeneratedBlock.IsNewGenerated = true;
+                    _newGeneratedBlocks.Add(newGeneratedBlock);
                 }    
                 DropCurrentBlocks(sameColumnBlocks[0].columnIndex,destroyedBlockRowIndices);
             }
             EventBus.OnAfterBlockGeneration?.Invoke();
+            ReassignBlocksAfterDrop();
             _destroyedBlockIndices.Clear();
+        }
+        
+        private void ReassignBlocksAfterDrop()
+        {
+            for (int rowIndex = 0; rowIndex < _rowCount; rowIndex++)
+            {
+                for (int columnIndex = 0; columnIndex < _columnCount; columnIndex++)
+                {
+                    if(_gameBlocks[rowIndex,columnIndex] == null) continue;
+                    int blockDropCount = _gameBlocks[rowIndex, columnIndex].DropCount;
+                    if(blockDropCount == 0) continue;
+                    _gameBlocks[rowIndex - blockDropCount, columnIndex] =
+                        _gameBlocks[rowIndex, columnIndex];
+                    _gameBlocks[rowIndex - blockDropCount, columnIndex].
+                        SetBlockIndex(rowIndex - blockDropCount, columnIndex);
+                }
+            }
+
+            foreach (var newGeneratedBlock in _newGeneratedBlocks)
+            {
+                int blockDropCount = newGeneratedBlock.DropCount;
+                (int rowIndex, int columnIndex) = newGeneratedBlock.GetIndex();
+                _gameBlocks[rowIndex - blockDropCount, columnIndex] = newGeneratedBlock;
+                newGeneratedBlock.SetBlockIndex(rowIndex - blockDropCount, columnIndex);
+            }
+            _newGeneratedBlocks.Clear();
+            
         }
 
         private void DropCurrentBlocks(int destroyedBlockColumnIndex, List<int> destroyedBlockRowIndices)

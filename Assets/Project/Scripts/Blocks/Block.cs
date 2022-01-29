@@ -24,7 +24,10 @@ namespace Project.Scripts.Blocks
         private Ease _blockDestroyEase;
         private float _blockMovementDuration;
         private Ease _blockMovementEase;
-        private int _dropCount;
+        
+        public bool IsNewGenerated { get; set; }
+        
+        public int DropCount { get; private set; }
 
         private void Awake()
         {
@@ -33,7 +36,8 @@ namespace Project.Scripts.Blocks
             _blockDestroyEase = GameManager.Instance.blockDestroyEase;
             _blockMovementDuration = GameManager.Instance.blockMovementDuration;
             _blockMovementEase = GameManager.Instance.blockMovementEase;
-            _dropCount = 0;
+            DropCount = 0;
+            IsNewGenerated = false;
         }
 
         private void OnEnable()
@@ -50,20 +54,26 @@ namespace Project.Scripts.Blocks
 
         private void OnAfterBlockGeneration()
         {
-            if (_dropCount == 0) return;
-            Debug.Log("slm");
-            EventBus.OnRecalculateBlock?.Invoke(_rowIndex,_columnIndex,_dropCount);
+            if (DropCount == 0) return;
+            //DropCount = Mathf.Min(DropCount, _rowIndex);
             Vector3 targetPosition =
-                transform.position + (_dropCount * BlockGenerator.VerticalScaleFactor * Vector3.down);
+                transform.position + (DropCount * BlockGenerator.VerticalScaleFactor * Vector3.down);
+            if (IsNewGenerated)
+            {
+                targetPosition += BlockGenerator.VerticalScaleFactor * Vector3.down;
+                IsNewGenerated = false;
+            }
             MoveBlock(targetPosition);
         }
 
         private void OnAfterBlockReplacement()
         {
-            _dropCount = 0;
+            DropCount = 0;
         }
 
-        public void IncreaseDropCount(int increaseAmount = 1) => _dropCount += increaseAmount;
+        public void IncreaseDropCount(int increaseAmount = 1) => DropCount += increaseAmount;
+
+        public (int rowIndex, int columnIndex) GetIndex() => (_rowIndex, _columnIndex);
 
         public void SetCurrentBlockGroup(List<Block> blockGroup)
         {
