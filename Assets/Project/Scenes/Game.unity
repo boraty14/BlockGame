@@ -559,6 +559,7 @@ MonoBehaviour:
   - {fileID: 3434015122421390653, guid: ce762b39b66d1b846bc067d549bead95, type: 3}
   - {fileID: 2135735304243480168, guid: 157522645cfb85d42a936d810f1a0d55, type: 3}
   - {fileID: 9072258570847346024, guid: 6d9206516a58128479ede6cc5e262c6d, type: 3}
+  blockCalculator: {fileID: 1246570777}
 --- !u!1 &1133076962
 GameObject:
   m_ObjectHideFlags: 0

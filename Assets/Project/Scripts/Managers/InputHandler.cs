@@ -11,16 +11,7 @@ namespace Project.Scripts.Managers
         private void Awake()
         {
             _mainCamera = Camera.main;
-        }
-
-        private void OnEnable()
-        {
             InputPanel.Instance.OnPointerDownEvent.AddListener(OnPointerDown);
-        }
-
-        private void OnDisable()
-        {
-            InputPanel.Instance.OnPointerDownEvent.RemoveListener(OnPointerDown);
         }
 
         private void OnPointerDown()
