@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening;
@@ -23,6 +24,7 @@ namespace Project.Scripts.Blocks
         private Ease _blockDestroyEase;
         private float _blockMovementDuration;
         private Ease _blockMovementEase;
+        private int _dropCount;
 
         private void Awake()
         {
@@ -31,8 +33,38 @@ namespace Project.Scripts.Blocks
             _blockDestroyEase = GameManager.Instance.blockDestroyEase;
             _blockMovementDuration = GameManager.Instance.blockMovementDuration;
             _blockMovementEase = GameManager.Instance.blockMovementEase;
+            _dropCount = 0;
+        }
+
+        private void OnEnable()
+        {
+            EventBus.OnAfterBlockGeneration += OnAfterBlockGeneration;
+            EventBus.OnAfterBlockReplacement += OnAfterBlockReplacement;
         }
         
+        private void OnDisable()
+        {
+            EventBus.OnAfterBlockGeneration -= OnAfterBlockGeneration;
+            EventBus.OnAfterBlockReplacement -= OnAfterBlockReplacement;
+        }
+
+        private void OnAfterBlockGeneration()
+        {
+            if (_dropCount == 0) return;
+            Debug.Log("slm");
+            EventBus.OnRecalculateBlock?.Invoke(_rowIndex,_columnIndex,_dropCount);
+            Vector3 targetPosition =
+                transform.position + (_dropCount * BlockGenerator.VerticalScaleFactor * Vector3.down);
+            MoveBlock(targetPosition);
+        }
+
+        private void OnAfterBlockReplacement()
+        {
+            _dropCount = 0;
+        }
+
+        public void IncreaseDropCount(int increaseAmount = 1) => _dropCount += increaseAmount;
+
         public void SetCurrentBlockGroup(List<Block> blockGroup)
         {
             _currentBlockGroup = blockGroup;
@@ -47,7 +79,7 @@ namespace Project.Scripts.Blocks
         public async void OnHit()
         {
             if (_currentBlockGroup.Count == 1) return;
-            GameManager.Instance.IsBlockInProcess = true;
+            //GameManager.Instance.IsBlockInProcess = true;
             var destroyProcesses = new Task[_currentBlockGroup.Count];
             for (int i = 0; i < _currentBlockGroup.Count; i++)
             {
@@ -65,7 +97,7 @@ namespace Project.Scripts.Blocks
             Destroy(gameObject);
         }
 
-        public void MoveBlock(Vector3 targetPosition)
+        private void MoveBlock(Vector3 targetPosition)
         {
             transform.DOMove(targetPosition, _blockMovementDuration).SetEase(_blockMovementEase);
         }
@@ -90,23 +122,5 @@ namespace Project.Scripts.Blocks
                     break;
             }
         }
-    }
-
-    public enum BlockState
-    {
-        Default,
-        A,
-        B,
-        C
-    }
-
-    public enum BlockColor
-    {
-        Green,
-        Red,
-        Pink,
-        Purple,
-        Yellow,
-        Blue
     }
 }
