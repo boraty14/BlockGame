@@ -1,3 +1,4 @@
+using Project.Scripts.Blocks;
 using Project.Scripts.Utils;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ namespace Project.Scripts.Managers
 
         private void OnPointerDown()
         {
-            if (GameManager.Instance.IsBlasting) return;
+            if (GameManager.Instance.IsBlockInProcess) return;
             
             var mousePosition = Input.mousePosition;
             mousePosition.z = Mathf.Abs(_mainCamera.transform.position.z);
@@ -24,7 +25,8 @@ namespace Project.Scripts.Managers
             RaycastHit2D hit = Physics2D.Raycast(screenPos,Vector2.zero);
             if (hit)
             {
-                Debug.Log(hit.transform.name);
+                Block hitBlock = hit.transform.GetComponent<Block>();
+                hitBlock.OnHit();
             }
         }
     }

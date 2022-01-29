@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Project.Scripts.Managers;
 using UnityEngine;
@@ -24,7 +23,6 @@ namespace Project.Scripts.Blocks
         
         private void SetGameSettings()
         {
-            Debug.Log(GameManager.Instance.rowCount);
             _rowCount = GameManager.Instance.rowCount;
             _columnCount = GameManager.Instance.columnCount;
             _firstLimit = GameManager.Instance.firstLimit;
@@ -47,12 +45,13 @@ namespace Project.Scripts.Blocks
             }
             foreach (var blockGroup in _blockGroups)
             {
-                Debug.Log(blockGroup.Count);
                 foreach (var block in blockGroup)
                 {
                     block.SetSprite(ReturnBlockState(blockGroup.Count));
                 }
             }
+
+            GameManager.Instance.IsBlockInProcess = false;
         }
 
         private void CreateBlockGroup(int rowIndex,int columnIndex)

@@ -1,5 +1,7 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using DG.Tweening;
+using Project.Scripts.Managers;
 using Project.Scripts.Utils;
 using UnityEngine;
 
@@ -15,43 +17,56 @@ namespace Project.Scripts.Blocks
 
         private SpriteRenderer _spriteRenderer;
         private List<Block> _currentBlockGroup;
+        private int _rowIndex;
+        private int _columnIndex;
+        private float _blockDestroyDuration;
+        private Ease _blockDestroyEase;
+        private float _blockMovementDuration;
+        private Ease _blockMovementEase;
 
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
+            _blockDestroyDuration = GameManager.Instance.blockDestroyDuration;
+            _blockDestroyEase = GameManager.Instance.blockDestroyEase;
+            _blockMovementDuration = GameManager.Instance.blockMovementDuration;
+            _blockMovementEase = GameManager.Instance.blockMovementEase;
         }
-
-        private void OnEnable()
-        {
-            EventBus.OnBlockCalculate += OnBlockCalculate;
-        }
-
-        private void OnDisable()
-        {
-            EventBus.OnBlockCalculate -= OnBlockCalculate;
-        }
-
-        private void OnBlockCalculate()
-        {
-            
-        }
-
+        
         public void SetCurrentBlockGroup(List<Block> blockGroup)
         {
             _currentBlockGroup = blockGroup;
         }
 
-        public void OnHit()
+        public void SetBlockIndex(int rowIndex, int columnIndex)
         {
-            foreach (var currentBlock in _currentBlockGroup)
-            {
-                currentBlock.BlastBlock();
-            }
+            _rowIndex = rowIndex;
+            _columnIndex = columnIndex;
         }
 
-        public void BlastBlock()
+        public async void OnHit()
         {
-            
+            GameManager.Instance.IsBlockInProcess = true;
+            var destroyProcesses = new Task[_currentBlockGroup.Count];
+            for (int i = 0; i < _currentBlockGroup.Count; i++)
+            {
+                destroyProcesses[i] = _currentBlockGroup[i].DestroyBlockRoutine();
+            }
+            await Task.WhenAll(destroyProcesses);
+            EventBus.OnAfterBlockDestroy?.Invoke();
+        }
+
+        private async Task DestroyBlockRoutine()
+        {
+            EventBus.OnBlockDestroy?.Invoke(_rowIndex,_columnIndex);
+            await transform.DOScale(Vector3.zero, _blockDestroyDuration).
+                SetEase(_blockDestroyEase).AsyncWaitForCompletion();
+            Destroy(gameObject);
+        }
+
+        public void MoveBlock(Vector3 targetPosition)
+        {
+            transform.DOMove(targetPosition, _blockMovementDuration).SetEase(_blockMovementEase);
         }
 
         public BlockColor GetBlockColor() => blockColor;

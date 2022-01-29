@@ -902,3 +902,7 @@ MonoBehaviour:
   firstLimit: 2
   secondLimit: 4
   thirdLimit: 6
+  blockDestroyDuration: 0.2
+  blockDestroyEase: 2
+  blockMovementDuration: 0
+  blockMovementEase: 0
