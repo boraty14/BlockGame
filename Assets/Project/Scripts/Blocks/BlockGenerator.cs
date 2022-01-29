@@ -57,22 +57,27 @@ namespace Project.Scripts.Blocks
                     // give block an index according to (0,0) point is bottom left
                     int rowIndex = ReturnReferenceIndex(i, _rowCount);
                     int columnIndex = ReturnReferenceIndex(j, _columnCount);
+                    Debug.Log(rowIndex + " " + columnIndex);
                     _gameBlocks[rowIndex, columnIndex] = newBlock.GetComponent<Block>();
                 }
             }
         }
 
-        private int ReturnReferenceIndex(int index, int totalLength)
+        private void GenerateNewBlocks()
+        {
+            
+        }
+        
+        private void AssignBlocks()
+        {
+            blockCalculator.CalculateBlocks(_gameBlocks);   
+        }
+        
+        private static int ReturnReferenceIndex(int index, int totalLength)
         {
             int abstractIndex = (index / 2 + index % 2) * Mathf.RoundToInt(Mathf.Pow(-1, index + 1));
             int indexOffset = (totalLength - 1) / 2;
             return abstractIndex + indexOffset;
-
-        }
-
-        private void AssignBlocks()
-        {
-            blockCalculator.CalculateBlocks();   
         }
     }
 }

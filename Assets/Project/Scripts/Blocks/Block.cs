@@ -18,7 +18,6 @@ namespace Project.Scripts.Blocks
 
         private void Awake()
         {
-            _currentBlockGroup = null;
             _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
@@ -34,7 +33,7 @@ namespace Project.Scripts.Blocks
 
         private void OnBlockCalculate()
         {
-            _currentBlockGroup = null;
+            
         }
 
         public void SetCurrentBlockGroup(List<Block> blockGroup)
@@ -44,7 +43,6 @@ namespace Project.Scripts.Blocks
 
         public void OnHit()
         {
-            if (_currentBlockGroup == null) return;
             foreach (var currentBlock in _currentBlockGroup)
             {
                 currentBlock.BlastBlock();
@@ -58,24 +56,32 @@ namespace Project.Scripts.Blocks
 
         public BlockColor GetBlockColor() => blockColor;
 
-        public void SetSprite(int statusIndex)
+        public void SetSprite(BlockState blockState)
         {
-            switch (statusIndex)
+            switch (blockState)
             {
-                case 0:
+                case BlockState.Default:
                     _spriteRenderer.sprite = defaultSprite;
                     break;
-                case 1:
+                case BlockState.A:
                     _spriteRenderer.sprite = spriteA;
                     break;
-                case 2:
+                case BlockState.B:
                     _spriteRenderer.sprite = spriteB;
                     break;
-                case 3:
+                case BlockState.C:
                     _spriteRenderer.sprite = spriteC;
                     break;
             }
         }
+    }
+
+    public enum BlockState
+    {
+        Default,
+        A,
+        B,
+        C
     }
 
     public enum BlockColor
