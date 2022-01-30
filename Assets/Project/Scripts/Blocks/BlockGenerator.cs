@@ -163,6 +163,8 @@ namespace Project.Scripts.Blocks
                 newGeneratedBlock.SetBlockIndex(rowIndex - blockDropCount, columnIndex);
             }
             _newGeneratedBlocks.Clear();
+            EventBus.OnAfterBlockReplacement?.Invoke();
+            AssignBlocks();
             
         }
 
