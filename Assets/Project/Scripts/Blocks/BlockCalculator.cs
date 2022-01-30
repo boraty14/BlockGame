@@ -50,8 +50,6 @@ namespace Project.Scripts.Blocks
                     block.SetSprite(ReturnBlockState(blockGroup.Count));
                 }
             }
-
-            GameManager.Instance.IsBlockInProcess = false;
         }
 
         private void CreateBlockGroup(int rowIndex,int columnIndex)

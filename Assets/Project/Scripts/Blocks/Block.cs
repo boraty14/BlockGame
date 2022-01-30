@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening;
@@ -24,7 +23,9 @@ namespace Project.Scripts.Blocks
         private Ease _blockDestroyEase;
         private float _blockMovementDuration;
         private Ease _blockMovementEase;
-        
+
+        public static readonly List<Task> MoveTasks = new List<Task>();
+
         public bool IsNewGenerated { get; set; }
         
         public int DropCount { get; private set; }
@@ -55,7 +56,6 @@ namespace Project.Scripts.Blocks
         private void OnAfterBlockGeneration()
         {
             if (DropCount == 0) return;
-            //DropCount = Mathf.Min(DropCount, _rowIndex);
             Vector3 targetPosition =
                 transform.position + (DropCount * BlockGenerator.VerticalScaleFactor * Vector3.down);
             if (IsNewGenerated)
@@ -63,7 +63,7 @@ namespace Project.Scripts.Blocks
                 targetPosition += BlockGenerator.VerticalScaleFactor * Vector3.down;
                 IsNewGenerated = false;
             }
-            MoveBlock(targetPosition);
+            MoveTasks.Add(MoveBlock(targetPosition));
         }
 
         private void OnAfterBlockReplacement()
@@ -89,7 +89,7 @@ namespace Project.Scripts.Blocks
         public async void OnHit()
         {
             if (_currentBlockGroup.Count == 1) return;
-            //GameManager.Instance.IsBlockInProcess = true;
+            GameManager.Instance.IsBlockInProcess = true;
             var destroyProcesses = new Task[_currentBlockGroup.Count];
             for (int i = 0; i < _currentBlockGroup.Count; i++)
             {
@@ -107,9 +107,9 @@ namespace Project.Scripts.Blocks
             Destroy(gameObject);
         }
 
-        private void MoveBlock(Vector3 targetPosition)
+        private async Task MoveBlock(Vector3 targetPosition)
         {
-            transform.DOMove(targetPosition, _blockMovementDuration).SetEase(_blockMovementEase);
+            await transform.DOMove(targetPosition, _blockMovementDuration).SetEase(_blockMovementEase).AsyncWaitForCompletion();
         }
 
         public BlockColor GetBlockColor() => blockColor;

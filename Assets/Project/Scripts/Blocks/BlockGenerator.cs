@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Project.Scripts.Managers;
 using Project.Scripts.Utils;
 using UnityEngine;
@@ -93,7 +93,7 @@ namespace Project.Scripts.Blocks
             }
         }
 
-        private void GenerateNewBlocks()
+        private async void GenerateNewBlocks()
         {
             var columnsOfBlocks = new List<List<(int rowIndex, int columnIndex)>>();
             var sameColumnBlockIndices = new List<(int rowIndex, int columnIndex)>();
@@ -116,7 +116,6 @@ namespace Project.Scripts.Blocks
             // and drop current stacks
             foreach (var sameColumnBlocks in columnsOfBlocks)
             {
-                Debug.Log(sameColumnBlocks.Count);
                 List<int> destroyedBlockRowIndices = new List<int>();
                 for (int i = 0; i < sameColumnBlocks.Count; i++)
                 {
@@ -134,7 +133,11 @@ namespace Project.Scripts.Blocks
                 }    
                 DropCurrentBlocks(sameColumnBlocks[0].columnIndex,destroyedBlockRowIndices);
             }
+            
+            // wait for replacement to end and recalculate blocks
+            Block.MoveTasks.Clear();
             EventBus.OnAfterBlockGeneration?.Invoke();
+            await Task.WhenAll(Block.MoveTasks);
             ReassignBlocksAfterDrop();
             _destroyedBlockIndices.Clear();
         }
@@ -184,14 +187,10 @@ namespace Project.Scripts.Blocks
             }
         }
 
-        private void DropNewBlocks()
-        {
-            
-        }
-
         private void AssignBlocks()
         {
-            blockCalculator.CalculateBlocks(_gameBlocks);   
+            blockCalculator.CalculateBlocks(_gameBlocks);
+            GameManager.Instance.IsBlockInProcess = false;
         }
 
         private GameObject GetRandomBlockObject()

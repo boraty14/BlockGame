@@ -898,11 +898,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rowCount: 10
   columnCount: 10
-  colorCount: 2
+  colorCount: 6
   firstLimit: 2
   secondLimit: 4
   thirdLimit: 6
   blockDestroyDuration: 0.2
   blockDestroyEase: 2
-  blockMovementDuration: 1
-  blockMovementEase: 2
+  blockMovementDuration: 0.5
+  blockMovementEase: 3
