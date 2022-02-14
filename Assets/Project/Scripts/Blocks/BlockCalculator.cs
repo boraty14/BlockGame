@@ -1,43 +1,28 @@
 using System.Collections.Generic;
 using Project.Scripts.Managers;
+using Project.Scripts.SettingsObjects;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Project.Scripts.Blocks
 {
     public class BlockCalculator : MonoBehaviour
     {
-        private int _rowCount;
-        private int _columnCount;
-        private int _firstLimit;
-        private int _secondLimit;
-        private int _thirdLimit;
+        [Title("Game Settings")] 
+        [SerializeField] private GameSettings gameSettings;
 
         private readonly List<(int rowIndex, int columnIndex)> _calculatedBlockIndices = new List<(int rawIndex, int columnIndex)>();
         private readonly List<List<Block>> _blockGroups = new List<List<Block>>();
         private Block[,] _gameBlocks;
-
-        private void Awake()
-        {
-            SetGameSettings();
-        }
-        
-        private void SetGameSettings()
-        {
-            _rowCount = GameManager.Instance.rowCount;
-            _columnCount = GameManager.Instance.columnCount;
-            _firstLimit = GameManager.Instance.firstLimit;
-            _secondLimit = GameManager.Instance.secondLimit;
-            _thirdLimit = GameManager.Instance.thirdLimit;
-        }
 
         public void CalculateBlocks(Block[,] gameBlocks)
         {
             _gameBlocks = gameBlocks;
             _calculatedBlockIndices.Clear();
             _blockGroups.Clear();
-            for (int rowIndex = 0; rowIndex < _rowCount; rowIndex++)
+            for (int rowIndex = 0; rowIndex < gameSettings.rowCount; rowIndex++)
             {
-                for (int columnIndex = 0; columnIndex < _columnCount; columnIndex++)
+                for (int columnIndex = 0; columnIndex < gameSettings.columnCount; columnIndex++)
                 {
                     if (IsIndexCalculated(rowIndex, columnIndex)) continue;
                     CreateBlockGroup(rowIndex, columnIndex);
@@ -90,9 +75,9 @@ namespace Project.Scripts.Blocks
 
         private BlockState ReturnBlockState(int blockCount)
         {
-            if (blockCount <= _firstLimit) return BlockState.Default;
-            if (blockCount <= _secondLimit) return BlockState.A;
-            if (blockCount <= _thirdLimit) return BlockState.B;
+            if (blockCount <= gameSettings.firstLimit) return BlockState.Default;
+            if (blockCount <= gameSettings.secondLimit) return BlockState.A;
+            if (blockCount <= gameSettings.thirdLimit) return BlockState.B;
             return BlockState.C;
         }
 
@@ -103,8 +88,8 @@ namespace Project.Scripts.Blocks
 
         private bool IsIndexValid(int rowIndex, int columnIndex)
         {
-            return rowIndex > -1 && rowIndex < _rowCount &&
-                   columnIndex > -1 && columnIndex < _columnCount;
+            return rowIndex > -1 && rowIndex < gameSettings.rowCount &&
+                   columnIndex > -1 && columnIndex < gameSettings.columnCount;
         }
 
         private bool IsIndexCalculated(int rowIndex, int columnIndex)

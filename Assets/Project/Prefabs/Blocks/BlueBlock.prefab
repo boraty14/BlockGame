@@ -50,6 +50,8 @@ MonoBehaviour:
   spriteB: {fileID: 21300000, guid: 477825d705a46714c83ad3d0e4c1174c, type: 3}
   spriteC: {fileID: 21300000, guid: 79c32ebf551955e49a41191773011897, type: 3}
   blockColor: 5
+  blockGeneratorSettings: {fileID: 11400000, guid: 0e9db23b51fbc244dbcb3befc110dafa, type: 2}
+  blockSettings: {fileID: 11400000, guid: 697ff16acc19dd542bad67e3864ce043, type: 2}
 --- !u!212 &-4019171668600882312
 SpriteRenderer:
   m_ObjectHideFlags: 0

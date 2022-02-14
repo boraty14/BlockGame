@@ -560,6 +560,8 @@ MonoBehaviour:
   - {fileID: 2135735304243480168, guid: 157522645cfb85d42a936d810f1a0d55, type: 3}
   - {fileID: 9072258570847346024, guid: 6d9206516a58128479ede6cc5e262c6d, type: 3}
   blockCalculator: {fileID: 1246570777}
+  blockGeneratorSettings: {fileID: 11400000, guid: 0e9db23b51fbc244dbcb3befc110dafa, type: 2}
+  gameSettings: {fileID: 11400000, guid: 20ff85eaaeed56d4ca926b4198ae931e, type: 2}
 --- !u!1 &1133076962
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,6 +635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b888d227159a91946b6539b49d6eacbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSettings: {fileID: 11400000, guid: 20ff85eaaeed56d4ca926b4198ae931e, type: 2}
 --- !u!1 &1575268198
 GameObject:
   m_ObjectHideFlags: 0
@@ -896,13 +899,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc303b7629870e744ab89803d025ae7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rowCount: 10
-  columnCount: 10
-  colorCount: 6
-  firstLimit: 2
-  secondLimit: 4
-  thirdLimit: 6
-  blockDestroyDuration: 0.2
-  blockDestroyEase: 2
-  blockMovementDuration: 0.5
-  blockMovementEase: 3

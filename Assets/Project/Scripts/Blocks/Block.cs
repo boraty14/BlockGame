@@ -2,41 +2,41 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening;
 using Project.Scripts.Managers;
+using Project.Scripts.SettingsObjects;
 using Project.Scripts.Utils;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Project.Scripts.Blocks
 {
     public class Block : MonoBehaviour
     {
+        [Title("Block Elements")]
         [SerializeField] private Sprite defaultSprite;
         [SerializeField] private Sprite spriteA;
         [SerializeField] private Sprite spriteB;
         [SerializeField] private Sprite spriteC;
         [SerializeField] private BlockColor blockColor;
 
+        [Title("Block Generator Settings")]
+        [SerializeField] private BlockGeneratorSettings blockGeneratorSettings;
+
+        [Title("Block Settings")]
+        [SerializeField] private BlockSettings blockSettings;
+
         private SpriteRenderer _spriteRenderer;
         private List<Block> _currentBlockGroup;
         private int _rowIndex;
         private int _columnIndex;
-        private float _blockDestroyDuration;
-        private Ease _blockDestroyEase;
-        private float _blockMovementDuration;
-        private Ease _blockMovementEase;
 
         public static readonly List<Task> MoveTasks = new List<Task>();
 
         public bool IsNewGenerated { get; set; }
-        
-        public int DropCount { get; private set; }
 
+        public int DropCount { get; private set; }
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _blockDestroyDuration = GameManager.Instance.blockDestroyDuration;
-            _blockDestroyEase = GameManager.Instance.blockDestroyEase;
-            _blockMovementDuration = GameManager.Instance.blockMovementDuration;
-            _blockMovementEase = GameManager.Instance.blockMovementEase;
             DropCount = 0;
             IsNewGenerated = false;
         }
@@ -46,7 +46,7 @@ namespace Project.Scripts.Blocks
             EventBus.OnAfterBlockGeneration += OnAfterBlockGeneration;
             EventBus.OnAfterBlockReplacement += OnAfterBlockReplacement;
         }
-        
+
         private void OnDisable()
         {
             EventBus.OnAfterBlockGeneration -= OnAfterBlockGeneration;
@@ -57,12 +57,13 @@ namespace Project.Scripts.Blocks
         {
             if (DropCount == 0) return;
             Vector3 targetPosition =
-                transform.position + (DropCount * BlockGenerator.VerticalScaleFactor * Vector3.down);
+                transform.position + (DropCount * blockGeneratorSettings.verticalScaleFactor * Vector3.down);
             if (IsNewGenerated)
             {
-                targetPosition += BlockGenerator.VerticalScaleFactor * Vector3.down;
+                targetPosition += blockGeneratorSettings.verticalScaleFactor * Vector3.down;
                 IsNewGenerated = false;
             }
+
             MoveTasks.Add(MoveBlock(targetPosition));
         }
 
@@ -95,21 +96,23 @@ namespace Project.Scripts.Blocks
             {
                 destroyProcesses[i] = _currentBlockGroup[i].DestroyBlockRoutine();
             }
+
             await Task.WhenAll(destroyProcesses);
             EventBus.OnAfterBlockDestroy?.Invoke();
         }
 
         private async Task DestroyBlockRoutine()
         {
-            EventBus.OnBlockDestroy?.Invoke(_rowIndex,_columnIndex);
-            await transform.DOScale(Vector3.zero, _blockDestroyDuration).
-                SetEase(_blockDestroyEase).AsyncWaitForCompletion();
+            EventBus.OnBlockDestroy?.Invoke(_rowIndex, _columnIndex);
+            await transform.DOScale(Vector3.zero, blockSettings.blockDestroyDuration)
+                .SetEase(blockSettings.blockDestroyEase).AsyncWaitForCompletion();
             Destroy(gameObject);
         }
 
         private async Task MoveBlock(Vector3 targetPosition)
         {
-            await transform.DOMove(targetPosition, _blockMovementDuration).SetEase(_blockMovementEase).AsyncWaitForCompletion();
+            await transform.DOMove(targetPosition, blockSettings.blockMovementDuration)
+                .SetEase(blockSettings.blockMovementEase).AsyncWaitForCompletion();
         }
 
         public BlockColor GetBlockColor() => blockColor;
