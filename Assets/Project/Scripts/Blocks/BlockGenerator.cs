@@ -22,10 +22,7 @@ namespace Project.Scripts.Blocks
         [Title("Game Settings")]
         [SerializeField] private GameSettings gameSettings;
 
-        //public const float VerticalScaleFactor = 2.56f; // vertical ratio of unity units/unity scale for sprites
-        //private const float HorizontalScaleFactor = 2.26f; // horizontal ratio of unity units/unity scale for sprites
         private const int MaxColorCount = 6;
-
 
         private List<GameObject> _gameBlockPrefabs;
         private Block[,] _gameBlocks;
@@ -141,7 +138,7 @@ namespace Project.Scripts.Blocks
                     _newGeneratedBlocks.Add(newGeneratedBlock);
                 }
 
-                DropCurrentBlocks(sameColumnBlocks[0].columnIndex, destroyedBlockRowIndices);
+                SetDropCounts(sameColumnBlocks[0].columnIndex, destroyedBlockRowIndices);
             }
 
             // wait for replacement to end and recalculate blocks
@@ -181,7 +178,7 @@ namespace Project.Scripts.Blocks
             AssignBlocks();
         }
 
-        private void DropCurrentBlocks(int destroyedBlockColumnIndex, List<int> destroyedBlockRowIndices)
+        private void SetDropCounts(int destroyedBlockColumnIndex, List<int> destroyedBlockRowIndices)
         {
             // for each block in this column, check if destroyed object is under this block
             // If it is, increase its drop count
