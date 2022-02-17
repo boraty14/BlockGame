@@ -55,7 +55,7 @@ namespace Project.Scripts.Blocks
 
         private void OnAfterBlockDestroy()
         {
-            GenerateNewBlocks();
+            GroupDestroyedBlocksByColumn();
         }
 
         private void Start()
@@ -94,7 +94,7 @@ namespace Project.Scripts.Blocks
             }
         }
 
-        private async void GenerateNewBlocks()
+        private void GroupDestroyedBlocksByColumn()
         {
             var columnsOfBlocks = new List<List<(int rowIndex, int columnIndex)>>();
             var sameColumnBlockIndices = new List<(int rowIndex, int columnIndex)>();
@@ -116,32 +116,43 @@ namespace Project.Scripts.Blocks
             if (sameColumnBlockIndices.Count != 0)
                 columnsOfBlocks.Add(new List<(int rowIndex, int columnIndex)>(sameColumnBlockIndices));
 
-            // and generate new ones according to the 
+            GenerateNewBlocks(columnsOfBlocks);
+        }
+
+        private void GenerateNewBlocks(List<List<(int rowIndex, int columnIndex)>> columnsOfBlocks)
+        {
+            // generate new ones according to the 
             // number of destroyed blocks on each column.
-            // and drop current stacks
             foreach (var sameColumnBlocks in columnsOfBlocks)
             {
                 List<int> destroyedBlockRowIndices = new List<int>();
                 for (int i = 0; i < sameColumnBlocks.Count; i++)
                 {
                     GameObject newGeneratedBlockObject = GetRandomBlockObject();
-                    var verticalGeneratePosition = ((gameSettings.rowCount / 2) + (2 + i) - 0.5f) *
-                                                   blockGeneratorSettings.verticalScaleFactor * Vector3.up;
-                    var horizontalGeneratePosition = (-(gameSettings.columnCount / 2) + sameColumnBlocks[i].columnIndex + 0.5f) *
-                                                     blockGeneratorSettings.horizontalScaleFactor * Vector3.right;
+                    var verticalGeneratePosition =
+                        ((gameSettings.rowCount / 2) + (blockGeneratorSettings.verticalGenerateOffset + i) - 0.5f) *
+                        blockGeneratorSettings.verticalScaleFactor * Vector3.up;
+                    var horizontalGeneratePosition =
+                        (-(gameSettings.columnCount / 2) + sameColumnBlocks[i].columnIndex + 0.5f) *
+                        blockGeneratorSettings.horizontalScaleFactor * Vector3.right;
                     newGeneratedBlockObject.transform.position = verticalGeneratePosition + horizontalGeneratePosition;
                     destroyedBlockRowIndices.Add(sameColumnBlocks[i].rowIndex);
+
                     Block newGeneratedBlock = newGeneratedBlockObject.GetComponent<Block>();
-                    newGeneratedBlock.IncreaseDropCount(sameColumnBlocks.Count);
-                    newGeneratedBlock.SetBlockIndex(gameSettings.rowCount + i, sameColumnBlocks[0].columnIndex);
-                    newGeneratedBlock.IsNewGenerated = true;
+                    newGeneratedBlock.SetNewBlockAfterResolve(sameColumnBlocks.Count, gameSettings.rowCount + i,
+                        sameColumnBlocks[0].columnIndex);
                     _newGeneratedBlocks.Add(newGeneratedBlock);
                 }
 
                 SetDropCounts(sameColumnBlocks[0].columnIndex, destroyedBlockRowIndices);
             }
 
-            // wait for replacement to end and recalculate blocks
+            CompleteNewBlocksGeneration();
+        }
+
+        private async void CompleteNewBlocksGeneration()
+        {
+            // clear previous task list, wait for replacement to end and recalculate blocks
             Block.MoveTasks.Clear();
             EventBus.OnAfterBlockGeneration?.Invoke();
             await Task.WhenAll(Block.MoveTasks);

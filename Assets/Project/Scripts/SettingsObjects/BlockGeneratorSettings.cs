@@ -7,5 +7,6 @@ namespace Project.Scripts.SettingsObjects
     {
         public float verticalScaleFactor; // vertical ratio of unity units/unity scale for sprites
         public float horizontalScaleFactor; // horizontal ratio of unity units/unity scale for sprites
+        [Range(1,10)] public float verticalGenerateOffset;
     }
 }

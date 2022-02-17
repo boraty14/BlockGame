@@ -34,6 +34,7 @@ namespace Project.Scripts.Blocks
         public bool IsNewGenerated { get; set; }
 
         public int DropCount { get; private set; }
+
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -60,7 +61,9 @@ namespace Project.Scripts.Blocks
                 transform.position + (DropCount * blockGeneratorSettings.verticalScaleFactor * Vector3.down);
             if (IsNewGenerated)
             {
-                targetPosition += blockGeneratorSettings.verticalScaleFactor * Vector3.down;
+                targetPosition += (blockGeneratorSettings.verticalScaleFactor *
+                                  (blockGeneratorSettings.verticalGenerateOffset - 1f)) *
+                                  Vector3.down;
                 IsNewGenerated = false;
             }
 
@@ -85,6 +88,13 @@ namespace Project.Scripts.Blocks
         {
             _rowIndex = rowIndex;
             _columnIndex = columnIndex;
+        }
+
+        public void SetNewBlockAfterResolve(int dropCount, int rowIndex, int columnIndex)
+        {
+            IncreaseDropCount(dropCount);
+            SetBlockIndex(rowIndex, columnIndex);
+            IsNewGenerated = true;
         }
 
         public async void OnHit()

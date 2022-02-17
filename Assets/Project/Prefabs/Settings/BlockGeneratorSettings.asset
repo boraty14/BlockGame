@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   verticalScaleFactor: 2.56
   horizontalScaleFactor: 2.26
+  verticalGenerateOffset: 2.78
