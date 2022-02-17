@@ -8,7 +8,9 @@ block movement animation speed and ease.
 
 You can use BlockGeneratorSettings object for recalculating block
 offset vertically and horizontally for block generation if you
-ever want to change block scale.
+ever want to change block scale. You can use verticalGenerateOffset
+for declaring how far will new blocks be generated from 
+top of the board.
 
 Used Plugins:
 
